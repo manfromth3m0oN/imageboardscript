@@ -1,3 +1,4 @@
+import json
 import flask
 import mongoengine
 from mongoengine import Document, IntField, StringField, ReferenceField
@@ -57,7 +58,10 @@ def board(board):
 
 @app.route('/post', methods=['POST'])
 def post():
-    print(request.data)
+    r = request.form
+    print(r)
+    #print(r['body'])
+    #print(r['image'])
     return 'done'
 
 if __name__ == '__main__':

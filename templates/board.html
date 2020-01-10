@@ -15,37 +15,58 @@
 		<div class="container">
 			<center>
 				<h3>Start a thread</h3>
-				Name:<br/>
-				<input type="text" id="name"><br/>
-				Post:<br/>
-				<input type="textarea" id="body"><br/>
-				Picture:<br/>
-				<input type="file" id="image"><br/><br/>
-				<button type="button" class="btn btn-primary" id="submit">Submit</button>
+				<form method="POST" action="/post" enctype="multipart/form-data" id="post">
+					Name:<br/>
+					<input type="text" name="name" value="anon" id="name"><br/>
+					Post:<br/>
+					<input type="textarea" name="body" id="body"><br/>
+					Picture:<br/>
+					<input type="file" name="file" id="image"><br/><br/>
+					<button type="button" onclick="SubForm()" class="btn btn-primary" id="submit">Submit</button>
+				</form>
 			</center>
 		</div>
 		<script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
 		<script>
-			$("#submit").click(function(){
-				if ($("#name").val() == "") {
-				let name = "anon"
-				} else {
-				let name = $("#name").val();
-				}
-				let body = $("#body").val();
-				if ($("#image").get(0).files.length == 0) {
-					let image = "Null"
-				}
-				$('#body').val("")
+			function getFormData($form){
+				var unindexed_array = $form.serializeArray();
+				var indexed_array = {};
+
+				$.map(unindexed_array, function(n, i){
+					indexed_array[n['name']] = n['value'];
+				});
+
+				return indexed_array;
+			}
+			function getImage(){
+				const reader = new FileReader();
+				var file = document.querySelectorAll('input')[2].files[0]
+				reader.readAsDataURL(file);
+				return reader.result;
+			}
+			function SubForm (){
+				var $form = $("#post");
+				var data = getFormData($form);
+				data.image = getImage()
 				$.ajax({
-					type: "POST",
-					url: "/post",
-					data: JSON.stringify({"name":name, "body":body, "image":image}),
-					success: function(e){console.log("success")},
-					error: function(e){console.log(e)},
-					processData: false
+					url:'/post',
+					type:'post',
+					data:data,
+					success:function(){
+						console.log("worked");
+					}
 				});
+			}
+			/*
+			$("form#post").submit(function(e) {
+				e.preventDefault();
+				var formData = new FormData(this);
+
+				$.post($(this).attr("action"), formData, function(data) {
+					alert(data);
 				});
+			});
+			*/
 		</script>
 		<!-- Optional JavaScript -->
 		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
