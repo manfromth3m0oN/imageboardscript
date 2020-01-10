@@ -26,7 +26,14 @@
 				</form>
 			</center>
 			<div>
-				{{ threads[0] }}
+				{% for key in threads.keys()%}
+				<div id="{{key}}">
+					{{threads[key]}}
+					<p>Name: {{threads[key]['name']}} </br>
+					Body: {{threads[key]['body']}}</p>
+					<img src="{{url_for()}}">
+				</div>
+				{% endfor %}
 			</div>
 		</div>
 		<script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>

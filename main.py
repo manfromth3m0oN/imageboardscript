@@ -65,14 +65,12 @@ def board(board):
         return flask.abort(404)
     threadsobj = Post.objects(board=board)
     print('Threads: '+str(len(threadsobj)))
-    threads = '{'
+    threads = {}
     for thread in threadsobj:
-        j = '"'+str(thread.id)+'":{'+'"name"'+':"'+thread.name+'",'+'"body"'+':"'+thread.body+'",'+'"image"'+':"'+thread.image+'"}'
-        threads = threads + j+','
-    threads = threads.rstrip(',')
-    threads = threads + '}'
+        j = {str(thread.id):{'name':thread.name,'body':thread.body,'image':thread.image}}
+        threads.update(j)
     print(threads)
-    return render_template('board.html', sn=board, board=q[0], threads=json.loads(threads))
+    return render_template('board.html', sn=board, board=q[0], threads=threads)
 
 @app.route('/post', methods=['POST'])
 def post():
