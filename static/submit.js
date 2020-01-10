@@ -18,4 +18,5 @@ function doSubmit(){
 	var request = new XMLHttpRequest();
 	request.open('POST', "/post");
 	request.send(formData);
+	location.reload(true);
 }

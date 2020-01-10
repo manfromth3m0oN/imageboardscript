@@ -7,12 +7,12 @@
 
 		<!-- Bootstrap CSS -->
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
-
+		<link rel="stylesheet" href="{{url_for('static', filename='board.css')}}">
 		<title>{{ sn }} | ____chan</title>
 	</head>
 	<body>
-		<center><h1><span id="board">{{ sn }}</span> | {{ board.name }}</h1></center>
-		<div class="container">
+		<center><h1 id="title"><span id="board">{{ sn }}</span> | {{ board.name }}</h1 id="title"></center>
+		<div class="container border border-dark" id="mainview">
 			<center>
 				<h3>Start a thread</h3>
 				<form method="POST" action="/post" enctype="multipart/form-data" id="post">
@@ -26,13 +26,20 @@
 				</form>
 			</center>
 			<div>
+				<hr/>
 				{% for key in threads.keys()%}
 				<div id="{{key}}">
-					{{threads[key]}}
-					<p>Name: {{threads[key]['name']}} </br>
-					Body: {{threads[key]['body']}}</p>
-					<img src="{{url_for()}}">
+					{% if threads[key]['image']%}
+					<img id="postimage" src="static/uploads/{{threads[key]['image']}}" height="100px">
+					{% endif %}
+					<p id="postbody">
+						<a id="threadlink" style="font-size:8px" href="/{{sn}}/{{key}}">{{key}}</a>
+						<span style="font-size:8px" id="startername">Name: {{threads[key]['name']}}</span><br>
+						{{threads[key]['body']}}
+					</p>
 				</div>
+				<hr/>
+				<br/>
 				{% endfor %}
 			</div>
 		</div>

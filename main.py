@@ -72,6 +72,10 @@ def board(board):
     print(threads)
     return render_template('board.html', sn=board, board=q[0], threads=threads)
 
+@app.route('/<board>/<tid>')
+def reply(board, tid):
+    return board, tid
+
 @app.route('/post', methods=['POST'])
 def post():
     r = request.form
