@@ -1,11 +1,17 @@
+import os
 import json
 import flask
 import mongoengine
 from mongoengine import Document, IntField, StringField, ReferenceField
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash, redirect, url_for
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENTIONS = {'png', 'jpg', 'jpeg', 'gif', 'webm'}
 
 mongoengine.connect(db='chan') # uses default (localhost:27017)
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 class Board(Document):
     shortname = StringField(unique=True)
@@ -19,15 +25,14 @@ class Board(Document):
         return build
 
 class Post(Document):
-    id = IntField(primary_key=True, unique=True)
     body = StringField()
     image = StringField()
-    board = ReferenceField(Board)
+    board = StringField()
     replyingto = IntField()
-    name = StringField(default='anon')
+    name = StringField()
 
 '''
-post = Post(id=6969, body="", image="", ) # How to format a post
+post = Post(body="", image="", etc...) # How to format a post
 post.save() #Saving the post
 
 # Get all posts from board g
@@ -36,6 +41,10 @@ Post.objects(board=Board.object(shortname="g")[0])
 newboard = Board(shortname='k', name='weapons') # Submit new board
 Board.objects().to_json() # Get all boards
 '''
+
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENTIONS
 
 initboards = {'g':'technology', 'b':'random', 'gif':'gif', 'hr':'high res'}
 if Board.objects().count() == 0:
@@ -54,14 +63,38 @@ def board(board):
     q = Board.objects(shortname=board)
     if q.count() == 0:
         return flask.abort(404)
-    return render_template('board.html', sn=board, board=q[0])
+    threadsobj = Post.objects(board=board)
+    print('Threads: '+str(len(threadsobj)))
+    threads = '{'
+    for thread in threadsobj:
+        j = '"'+str(thread.id)+'":{'+'"name"'+':"'+thread.name+'",'+'"body"'+':"'+thread.body+'",'+'"image"'+':"'+thread.image+'"}'
+        threads = threads + j+','
+    threads = threads.rstrip(',')
+    threads = threads + '}'
+    print(threads)
+    return render_template('board.html', sn=board, board=q[0], threads=json.loads(threads))
 
 @app.route('/post', methods=['POST'])
 def post():
     r = request.form
-    print(r)
-    #print(r['body'])
-    #print(r['image'])
+    if r.get('replyingto'):
+        replyingto = int(r['replyingto'])
+    else:
+        replyingto = 0
+    name = r['name']
+    body = r['body']
+    board = r['board']
+    image = ''
+    try:
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        image = file.filename
+    except:
+        print('No file')
+    post = Post(body=body, board=board, name=name, image=image, replyingto=replyingto)
+    post.save()
     return 'done'
 
 if __name__ == '__main__':
