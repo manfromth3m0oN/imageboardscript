@@ -1,7 +1,28 @@
-#postbody {display:inline-block;margin-right:10px; width:200px;} 
-#postimage {display:inline-block; width:200px;} 
-#threadlink {display:inline-block;}
-#startername {display: inline-block;}
-#title {margin: 25px; padding: 25px;}
-body {background: #3D4849;}
-#mainview {background:#CFD1D2;}
+#postbody {
+  display: inline-block;
+  margin-right: 10px;
+  width: 200px;
+}
+#postimage {
+  display: inline-block;
+  width: 200px;
+}
+#threadlink {
+  display: inline-block;
+}
+#startername {
+  display: inline-block;
+}
+#title {
+  margin: 25px;
+  padding: 25px;
+}
+body {
+  background: #3d4849;
+}
+#mainview {
+  background: #cfd1d2;
+}
+html {
+  scroll-behavior: smooth;
+}

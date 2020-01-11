@@ -9,9 +9,10 @@ from werkzeug.utils import secure_filename
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENTIONS = {'png', 'jpg', 'jpeg', 'gif', 'webm'}
 
-mongoengine.connect(db='chan') # uses default (localhost:27017)
+mongoengine.connect(db='chan')  # uses default (localhost:27017)
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 class Board(Document):
     shortname = StringField(unique=True)
@@ -21,15 +22,18 @@ class Board(Document):
     def getdict():
         build = {}
         objs = Board.objects()
-        for obj in objs: build[obj.shortname] = obj.name
+        for obj in objs:
+            build[obj.shortname] = obj.name
         return build
+
 
 class Post(Document):
     body = StringField()
     image = StringField()
     board = StringField()
-    replyingto = IntField()
+    replyingto = StringField()
     name = StringField()
+
 
 '''
 post = Post(body="", image="", etc...) # How to format a post
@@ -42,21 +46,25 @@ newboard = Board(shortname='k', name='weapons') # Submit new board
 Board.objects().to_json() # Get all boards
 '''
 
+
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENTIONS
 
-initboards = {'g':'technology', 'b':'random', 'gif':'gif', 'hr':'high res'}
+
+initboards = {'g': 'technology', 'b': 'random', 'gif': 'gif', 'hr': 'high res'}
 if Board.objects().count() == 0:
     for board in initboards:
         board = Board(shortname=board, name=initboards[board])
         board.save()
 
+
 @app.route('/')
 def index():
     boards = Board.getdict()
     print(boards)
-    return render_template('index.html', boards = boards)
+    return render_template('index.html', boards=boards)
+
 
 @app.route('/<board>')
 def board(board):
@@ -67,20 +75,37 @@ def board(board):
     print('Threads: '+str(len(threadsobj)))
     threads = {}
     for thread in threadsobj:
-        j = {str(thread.id):{'name':thread.name,'body':thread.body,'image':thread.image}}
+        j = {str(thread.id): {'name': thread.name,
+                              'body': thread.body, 'image': thread.image}}
         threads.update(j)
     print(threads)
     return render_template('board.html', sn=board, board=q[0], threads=threads)
 
+
 @app.route('/<board>/<tid>')
 def reply(board, tid):
-    return board, tid
+    # Get thread owner
+    owner = Post.objects(id=tid)[0]
+    ownerdict = {tid: {'name': owner.name,
+                       'body': owner.body, 'image': owner.image}}
+    # Get all childeren posts
+    try:
+        replies = Post.objects(replyingto=tid)
+        repliesdict = {}
+        for reply in replies:
+            replydict = {reply.id: {'name': reply.name,
+                                    'body': reply.body, 'image': reply.image}}
+            repliesdict.update(replydict)
+    except:
+        repliesdict = {}
+    return render_template('replies.html', owner=ownerdict, replies=repliesdict, tid=tid, board=owner.board)
+
 
 @app.route('/post', methods=['POST'])
 def post():
     r = request.form
     if r.get('replyingto'):
-        replyingto = int(r['replyingto'])
+        replyingto = r['replyingto']
     else:
         replyingto = 0
     name = r['name']
@@ -95,9 +120,11 @@ def post():
         image = file.filename
     except:
         print('No file')
-    post = Post(body=body, board=board, name=name, image=image, replyingto=replyingto)
+    post = Post(body=body, board=board, name=name,
+                image=image, replyingto=replyingto)
     post.save()
     return 'done'
+
 
 if __name__ == '__main__':
     app.run(debug=True)
