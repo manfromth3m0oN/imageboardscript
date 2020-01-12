@@ -68,7 +68,9 @@ def index():
     recentposts = {}
     for post in recentpostsobj:
         j = {str(post.id): {'name': post.name,
-                            'body': post.body, 'image': post.image}}
+                            'body': post.body,
+                            'board': post.board,
+                            'image': post.image}}
         recentposts.update(j)
     print(recentposts)
     return render_template('index.html', boards=boards, recentposts=recentposts)
@@ -84,10 +86,20 @@ def board(board):
     threads = {}
     for thread in threadsobj:
         j = {str(thread.id): {'name': thread.name,
-                              'body': thread.body, 'image': thread.image}}
+                              'body': thread.body,
+                              'image': thread.image}}
         threads.update(j)
-    print(threads)
-    return render_template('board.html', sn=board, board=q[0], threads=threads)
+    replies = {}
+    for thread in threads:
+        print('Thread: '+thread)
+        threadreplyobj = Post.objects(replyingto=thread).limit(3) # Any replies to the current thread in the for loop are here
+        for reply in threadreplyobj:
+            j = {str(reply.id): {'name': reply.name,
+                                 'body': reply.body, 
+                                 'replyingto': reply.replyingto,
+                                 'image': reply.image}}
+            replies.update(j)
+    return render_template('board.html', sn=board, board=q[0], threads=threads, replies=replies)
 
 
 @app.route('/<board>/<tid>')

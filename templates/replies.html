@@ -15,70 +15,101 @@
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="{{url_for('static', filename='board.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='board.css')}}" />
 
-    <link href="https://fonts.googleapis.com/css?family=Jaldi&display=swap" rel="stylesheet">    <title>{{tid}} | {{board}} | ___chan</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Jaldi&display=swap"
+      rel="stylesheet"
+    />
+    <title>{{tid}} | {{board}} | ___chan</title>
   </head>
   <body>
-    <center><h1 id="title">{{tid}} | <a href="/{{board}}"><span id="board">{{board}}</span></a> | ___chan</h1></center>
-    <div class="container border border-dark" id="mainview">
     <center>
-      <h3>Reply to this thread</h3>
-      <form id="post">
-        Name:<br />
-        <input type="text" name="name" value="anon" id="name" /><br />
-        Post:<br />
-        <input type="textarea" name="body" id="body" /><br />
-        Picture:<br />
-        <input type="file" name="file" id="image" /><br /><br />
-        <button
-          type="button"
-          onclick="doSubmit()"
-          class="btn btn-primary"
-          id="submit"
-        >
-          Submit
-        </button>
-      </form>
+      <h1 id="title">
+        {{tid}} | <a href="/{{board}}"><span id="board">{{board}}</span></a> |
+        ___chan
+      </h1>
     </center>
-    <h3>Thread Top</h3>
-    {% for key in owner.keys()%}
-    <div class="card mb-3 grid-item" style="max-width: 540px;" id="{{key}}">
-      <div class="row no-gutters">
-      {% if owner[key]['image']%}
-      <div class="col-md-4">
-      <img id="postimage" src="/static/uploads/{{owner[key]['image']}}" class="card-img">
-    </div>
-      {% endif %}
-      <div class="col-md-8">
-        <div class="card-body">
-          <h5 class="card-title" style="font-size:8px"><a href="/{{sn}}/{{key}}">{{key}}</a> Name: {{owner[key]['name']}}</h5>
-          <p class="card-text">{{owner[key]['body']}}</p>
-        </div>
-      </div>
-    </div>
-    </div>
-    <br/>
-    {% endfor%}
-    <hr/>
-      <h3>Replies</h3>
-				{% for key in replies.keys()%}
-				<div id="{{key}}">
-					{% if replies[key]['image']%}
-					<img id="postimage" src="/static/uploads/{{replies[key]['image']}}" height="100px">
-					{% endif %}
-					<div class="col-md-8">
+    <div class="container border border-dark" id="mainview">
+      <center>
+        <h3>Reply to this thread</h3>
+        <form id="post">
+          Name:<br />
+          <input type="text" name="name" value="anon" id="name" /><br />
+          Post:<br />
+          <input type="textarea" name="body" id="body" /><br />
+          Picture:<br />
+          <input type="file" name="file" id="image" /><br /><br />
+          <button
+            type="button"
+            onclick="doSubmit()"
+            class="btn btn-primary"
+            id="submit"
+          >
+            Submit
+          </button>
+        </form>
+      </center>
+      <hr />
+      <h3>Thread Top</h3>
+      {% for key in owner.keys()%}
+      <div class="card mb-3" style="max-width: 540px;" id="{{key}}">
+        <div class="row">
+          {% if owner[key]['image']%}
+          <div class="col-md-4">
+            <img
+              id="postimage"
+              src="/static/uploads/{{owner[key]['image']}}"
+              class="card-img"
+            />
+          </div>
+          {% endif %}
+          <div class="col-md-8">
             <div class="card-body">
-              <h5 class="card-title" style="font-size:8px"><a href="/{{sn}}/{{key}}">{{key}}</a> Name: {{replies[key]['name']}}</h5>
-              <p class="card-text">{{replies[key]['body']}}</p>
+              <h5 class="card-title" style="font-size:8px">
+                <a href="/{{sn}}/{{key}}">{{key}}</a> Name:
+                {{owner[key]['name']}}
+              </h5>
+              <p class="card-text">{{owner[key]['body']}}</p>
             </div>
           </div>
-				</div>
-				<hr/>
-				<br/>
+        </div>
+      </div>
+      <br />
+      {% endfor%}
+      <hr />
+      <h3>Replies</h3>
+      <div class="replies">
+        {% for key in replies.keys() %}
+        <div class="card mb-3" style="max-width: 540px;" id="{{key}}">
+          <div class="row">
+            {% if replies[key]['image'] %}
+            <div class="col-md-4">
+              <img
+                id="postimage"
+                src="/static/uploads/{{replies[key]['image']}}"
+                height="100px"
+              />
+            </div>
+            {% endif %}
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title" style="font-size:8px">
+                  <a href="javascript:mention('{{key}}')">{{key}}</a> Name:
+                  {{replies[key]['name']}}
+                </h5>
+                <p class="card-text">{{replies[key]['body']}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
         {% endfor %}
       </div>
-    <script type="text/javascript" src="{{ url_for('static', filename='submit.js') }}"></script>
+    </div>
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='submit.js') }}"
+    ></script>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script
@@ -95,6 +126,10 @@
       src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{{url_for('static', filename='mention.js')}}"
     ></script>
   </body>
 </html>

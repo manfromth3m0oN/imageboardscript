@@ -19,14 +19,13 @@
 }
 body {
   background: #3d4849;
+  font-family: 'Jaldi', sans-serif;
 }
 #mainview {
   background: #cfd1d2;
-  font-family: 'Jaldi', sans-serif;
 }
-html {
-  scroll-behavior: smooth;
-  
+.replies {
+  padding-left: 50px;
 }
 /*
 #newboard {
