@@ -12,7 +12,7 @@ ALLOWED_EXTENTIONS = {'png', 'jpg', 'jpeg', 'gif', 'webm'}
 mongoengine.connect(db='chan')  # uses default (localhost:27017)
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 class Board(Document):
     shortname = StringField(unique=True)
@@ -100,7 +100,6 @@ def reply(board, tid):
         repliesdict = {}
     return render_template('replies.html', owner=ownerdict, replies=repliesdict, tid=tid, board=owner.board)
 
-
 @app.route('/post', methods=['POST'])
 def post():
     r = request.form
@@ -125,6 +124,25 @@ def post():
     post.save()
     return 'done'
 
+@app.route('/boardsubmit', methods=['POST'])
+def boardsubmit():
+    r = request.form
+    boardname = r['boardName']
+    boardsn = r['boardShortName']
+    print(boardname)
+    print(boardsn)
+    boards = Board.getdict()
+    if boardsn in boards.keys():
+        if boardname == boards[boardsn]:
+            return 'ERR: a board with that name and shortname already exists'
+        else:
+            return 'ERR: a board with that shortname exists'
+    else:
+        print('board does not exist')
+        newboard = Board(shortname=boardsn, name=boardname)
+        newboard.save()
+        print('Board '+boardname+' created')
+        return 'OKK: Board Created'
 
 if __name__ == '__main__':
     app.run(debug=True)

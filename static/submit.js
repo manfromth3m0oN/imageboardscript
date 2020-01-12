@@ -24,3 +24,25 @@ function doSubmit() {
   request.send(formData);
   location.reload(true);
 }
+
+function boardSubmit() {
+  var formData = new FormData();
+
+  var boardName = document.getElementById("newboard-name");
+  formData.set("boardName", boardName.value);
+  var boardShortName = document.getElementById("newboard-shortname")
+  formData.set("boardShortName", boardShortName.value);
+  
+  var request = new XMLHttpRequest();
+  var responce = ""
+  request.onreadystatechange = function() {
+    if (request.readyState == XMLHttpRequest.DONE) {
+        var responce = request.responseText
+    }
+  }
+  request.open("POST", "/boardsubmit")
+  request.send(formData)
+  if (responce.substring(0,3) == 'ERR'){
+    document.getElementById('status').innerHTML = "<p>",responce,'</p>';
+  }
+}
