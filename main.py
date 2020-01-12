@@ -14,6 +14,7 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
+
 class Board(Document):
     shortname = StringField(unique=True)
     name = StringField(unique=True)
@@ -100,6 +101,7 @@ def reply(board, tid):
         repliesdict = {}
     return render_template('replies.html', owner=ownerdict, replies=repliesdict, tid=tid, board=owner.board)
 
+
 @app.route('/post', methods=['POST'])
 def post():
     r = request.form
@@ -124,6 +126,7 @@ def post():
     post.save()
     return 'done'
 
+
 @app.route('/boardsubmit', methods=['POST'])
 def boardsubmit():
     r = request.form
@@ -142,6 +145,7 @@ def boardsubmit():
         newboard.save()
         print('Board '+boardname+' created')
         return 'OKK: Board Created'
+
 
 if __name__ == '__main__':
     app.run(debug=True)

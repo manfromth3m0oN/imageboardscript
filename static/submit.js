@@ -11,9 +11,9 @@ function doSubmit() {
   formData.set("name", name.value);
   var body = document.getElementById("body");
   formData.set("body", body.value);
-  if (window.location.href.split("/").length > 4){
-    var url = window.location.href.split("/")
-    formData.set("replyingto", url[url.length - 1])
+  if (window.location.href.split("/").length > 4) {
+    var url = window.location.href.split("/");
+    formData.set("replyingto", url[url.length - 1]);
   }
   var board = $("#board").text();
   formData.set("board", board);
@@ -30,23 +30,26 @@ function boardSubmit() {
 
   var boardName = document.getElementById("newboard-name");
   formData.set("boardName", boardName.value);
-  var boardShortName = document.getElementById("newboard-shortname")
+  var boardShortName = document.getElementById("newboard-shortname");
   formData.set("boardShortName", boardShortName.value);
-  
+
   var request = new XMLHttpRequest();
   request.onreadystatechange = function() {
-    if (request.readyState == XMLHttpRequest.DONE) {7
-        var response = request.responseText
-        console.log(response);
-        if (response.substring(0,3) == 'ERR'){
-          document.getElementById('status').innerHTML = `<span class="error">${response}</span>`;
-        } else if (response.substring(0,3) == 'OKK'){
-          document.getElementById('status').innerHTML = `<span class="ok">${response}</span>`;
-          location.reload(true)
-        }
-        
+    if (request.readyState == XMLHttpRequest.DONE) {
+      var response = request.responseText;
+      console.log(response);
+      if (response.substring(0, 3) == "ERR") {
+        document.getElementById(
+          "status"
+        ).innerHTML = `<span class="error">${response}</span>`;
+      } else if (response.substring(0, 3) == "OKK") {
+        document.getElementById(
+          "status"
+        ).innerHTML = `<span class="ok">${response}</span>`;
+        location.reload(true);
+      }
     }
-  }
-  request.open("POST", "/boardsubmit")
-  request.send(formData)
+  };
+  request.open("POST", "/boardsubmit");
+  request.send(formData);
 }
