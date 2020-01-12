@@ -17,7 +17,7 @@
     />
     <link rel="stylesheet" href="{{url_for('static', filename='board.css')}}" />
 
-    <title>chan</title>
+    <link href="https://fonts.googleapis.com/css?family=Jaldi&display=swap" rel="stylesheet">    <title>chan</title>
   </head>
   <body>
     <center><h1>____chan</h1></center>
@@ -51,6 +51,27 @@
           </form>
         </div>
         <hr/>
+        <div class="grid">
+          <div class="grid-sizer"></div>
+        {% for key in recentposts.keys()%}
+        <div class="card mb-3 grid-item" style="max-width: 540px;" id="{{key}}">
+          <div class="row no-gutters">
+            {% if recentposts[key]['image']%}
+            <div class="col-md-4">
+              <img src="static/uploads/{{recentposts[key]['image']}}" class="card-img">
+            </div>
+            {% endif %}
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title" style="font-size:8px"><a href="/{{sn}}/{{key}}">{{key}}</a> Name: {{recentposts[key]['name']}}</h5>
+                <p class="card-text">{{recentposts[key]['body']}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+        </div>
       </center>
     </div>
     <script
@@ -74,5 +95,15 @@
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"
     ></script>
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.js"></script>
+    <script>
+    $('.grid').masonry({
+      // options
+      itemSelector: '.grid-item',
+      columnWidth: '.grid-sizer',
+      percentPosition: true,
+      gutter: 5
+    });
+    </script>
   </body>
 </html>

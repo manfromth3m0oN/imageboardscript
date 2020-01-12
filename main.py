@@ -64,7 +64,14 @@ if Board.objects().count() == 0:
 def index():
     boards = Board.getdict()
     print(boards)
-    return render_template('index.html', boards=boards)
+    recentpostsobj = Post.objects().limit(9)
+    recentposts = {}
+    for post in recentpostsobj:
+        j = {str(post.id): {'name': post.name,
+                            'body': post.body, 'image': post.image}}
+        recentposts.update(j)
+    print(recentposts)
+    return render_template('index.html', boards=boards, recentposts=recentposts)
 
 
 @app.route('/<board>')

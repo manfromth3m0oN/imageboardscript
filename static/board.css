@@ -22,12 +22,17 @@ body {
 }
 #mainview {
   background: #cfd1d2;
+  font-family: 'Jaldi', sans-serif;
 }
 html {
   scroll-behavior: smooth;
+  
 }
 /*
 #newboard {
   padding-bottom: 25px;
 }
 */
+.grid-sizer,
+.grid-item { width: 27%; }
+.grid-item--width2 { width: 48% }

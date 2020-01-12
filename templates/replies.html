@@ -17,7 +17,7 @@
     />
     <link rel="stylesheet" href="{{url_for('static', filename='board.css')}}">
 
-    <title>{{tid}} | {{board}} | ___chan</title>
+    <link href="https://fonts.googleapis.com/css?family=Jaldi&display=swap" rel="stylesheet">    <title>{{tid}} | {{board}} | ___chan</title>
   </head>
   <body>
     <center><h1 id="title">{{tid}} | <a href="/{{board}}"><span id="board">{{board}}</span></a> | ___chan</h1></center>
@@ -43,15 +43,20 @@
     </center>
     <h3>Thread Top</h3>
     {% for key in owner.keys()%}
-    <div id="{{key}}">
+    <div class="card mb-3 grid-item" style="max-width: 540px;" id="{{key}}">
+      <div class="row no-gutters">
       {% if owner[key]['image']%}
-      <img id="postimage" src="/static/uploads/{{owner[key]['image']}}" height="100px">
+      <div class="col-md-4">
+      <img id="postimage" src="/static/uploads/{{owner[key]['image']}}" class="card-img">
+    </div>
       {% endif %}
-      <p id="postbody">
-        <a id="threadlink" style="font-size:8px" href="#">{{key}}</a>
-        <span style="font-size:8px" id="startername">Name: {{owner[key]['name']}}</span><br>
-        {{owner[key]['body']}}
-      </p>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title" style="font-size:8px"><a href="/{{sn}}/{{key}}">{{key}}</a> Name: {{owner[key]['name']}}</h5>
+          <p class="card-text">{{owner[key]['body']}}</p>
+        </div>
+      </div>
+    </div>
     </div>
     <br/>
     {% endfor%}
@@ -62,11 +67,12 @@
 					{% if replies[key]['image']%}
 					<img id="postimage" src="/static/uploads/{{replies[key]['image']}}" height="100px">
 					{% endif %}
-					<p id="postbody">
-						<a id="threadlink" style="font-size:8px" href="#{{key}}">{{key}}</a>
-						<span style="font-size:8px" id="startername">Name: {{replies[key]['name']}}</span><br>
-						{{replies[key]['body']}}
-					</p>
+					<div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title" style="font-size:8px"><a href="/{{sn}}/{{key}}">{{key}}</a> Name: {{replies[key]['name']}}</h5>
+              <p class="card-text">{{replies[key]['body']}}</p>
+            </div>
+          </div>
 				</div>
 				<hr/>
 				<br/>
