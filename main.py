@@ -138,7 +138,6 @@ def boardsubmit():
         else:
             return 'ERR: a board with that shortname exists'
     else:
-        print('board does not exist')
         newboard = Board(shortname=boardsn, name=boardname)
         newboard.save()
         print('Board '+boardname+' created')

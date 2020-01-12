@@ -34,15 +34,19 @@ function boardSubmit() {
   formData.set("boardShortName", boardShortName.value);
   
   var request = new XMLHttpRequest();
-  var responce = ""
   request.onreadystatechange = function() {
-    if (request.readyState == XMLHttpRequest.DONE) {
-        var responce = request.responseText
+    if (request.readyState == XMLHttpRequest.DONE) {7
+        var response = request.responseText
+        console.log(response);
+        if (response.substring(0,3) == 'ERR'){
+          document.getElementById('status').innerHTML = `<span class="error">${response}</span>`;
+        } else if (response.substring(0,3) == 'OKK'){
+          document.getElementById('status').innerHTML = `<span class="ok">${response}</span>`;
+          location.reload(true)
+        }
+        
     }
   }
   request.open("POST", "/boardsubmit")
   request.send(formData)
-  if (responce.substring(0,3) == 'ERR'){
-    document.getElementById('status').innerHTML = "<p>",responce,'</p>';
-  }
 }
